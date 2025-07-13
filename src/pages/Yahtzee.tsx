@@ -40,8 +40,6 @@ const diceIcons = [
   faDiceSix,
 ];
 
-const diceLabels = ["Dice 1", "Dice 2", "Dice 3", "Dice 4", "Dice 5", "Dice 6"];
-
 type YahtzeeRow = {
   jugada: string;
   jugador1: string;
@@ -63,6 +61,7 @@ const Yahtzee = () => {
           <span style={{ fontWeight: 700, fontSize: 16 }}>Jugada</span>
         ),
         cell: (info) => {
+          console.log(info);
           const idx = info.row.index;
           if (idx >= 0 && idx < 6) {
             return (
@@ -71,7 +70,6 @@ const Yahtzee = () => {
                   icon={diceIcons[idx]}
                   style={{ fontSize: 24, color: "#3b3b3b" }}
                 />
-                <span style={{ fontWeight: 500 }}>{diceLabels[idx]}</span>
               </span>
             );
           }
