@@ -1,5 +1,13 @@
 import { useState, useMemo } from "react";
-import { Table, Flex, Select, TextField, Button } from "@radix-ui/themes";
+import {
+  Table,
+  Flex,
+  Select,
+  TextField,
+  Button,
+  IconButton,
+  Tooltip,
+} from "@radix-ui/themes";
 import {
   useReactTable,
   getCoreRowModel,
@@ -15,6 +23,10 @@ import {
   faDiceFive,
   faDiceSix,
   faUserPlus,
+  faTrash,
+  faPen,
+  faArrowLeft,
+  faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 
@@ -41,10 +53,9 @@ const diceIcons = [
   faDiceSix,
 ];
 
-// Estado de cada jugador
 interface Player {
   name: string;
-  scores: string[]; // Un valor por jugada
+  scores: string[];
 }
 
 const initialPlayers: Player[] = [
@@ -53,6 +64,25 @@ const initialPlayers: Player[] = [
 
 const Yahtzee = () => {
   const [players, setPlayers] = useState<Player[]>(initialPlayers);
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+
+  // Eliminar jugador
+  const handleRemovePlayer = (idx: number) => {
+    setPlayers((prev) => prev.filter((_, i) => i !== idx));
+    if (editingIdx === idx) setEditingIdx(null);
+  };
+
+  // Mover jugador
+  const handleMovePlayer = (idx: number, dir: -1 | 1) => {
+    setPlayers((prev) => {
+      const arr = [...prev];
+      const newIdx = idx + dir;
+      if (newIdx < 0 || newIdx >= arr.length) return arr;
+      [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+      return arr;
+    });
+    if (editingIdx === idx) setEditingIdx(idx + dir);
+  };
 
   // Botón para agregar jugador
   const handleAddPlayer = () => {
@@ -92,32 +122,97 @@ const Yahtzee = () => {
         accessorFn: (row) => row.jugada,
       },
     ];
-    // Una columna por jugador
     players.forEach((player, pIdx) => {
       base.push({
         id: `jugador${pIdx}`,
         header: () => (
-          <TextField.Root size="2" variant="surface" style={{ minWidth: 90 }}>
-            <input
-              value={player.name}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const newPlayers = [...players];
-                newPlayers[pIdx].name = e.target.value;
-                setPlayers(newPlayers);
-              }}
-              style={{
-                textAlign: "center",
-                fontWeight: 700,
-                border: "none",
-                background: "transparent",
-                width: "100%",
-              }}
-            />
-          </TextField.Root>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
+            {editingIdx === pIdx ? (
+              <TextField.Root
+                size="2"
+                variant="surface"
+                style={{ minWidth: 90 }}
+              >
+                <input
+                  value={player.name}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const newPlayers = [...players];
+                    newPlayers[pIdx].name = e.target.value;
+                    setPlayers(newPlayers);
+                  }}
+                  onBlur={() => setEditingIdx(null)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") setEditingIdx(null);
+                  }}
+                  autoFocus
+                  style={{
+                    textAlign: "center",
+                    fontWeight: 700,
+                    border: "none",
+                    background: "transparent",
+                    width: "100%",
+                  }}
+                />
+              </TextField.Root>
+            ) : (
+              <span
+                style={{ fontWeight: 700, fontSize: 16, cursor: "pointer" }}
+              >
+                {player.name}
+              </span>
+            )}
+            <Flex gap="1" justify="center" style={{ marginTop: 2 }}>
+              <Tooltip content="Editar nombre">
+                <IconButton
+                  size="1"
+                  variant="soft"
+                  onClick={() => setEditingIdx(pIdx)}
+                >
+                  <FontAwesomeIcon icon={faPen} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip content="Eliminar jugador">
+                <IconButton
+                  size="1"
+                  variant="soft"
+                  color="red"
+                  onClick={() => handleRemovePlayer(pIdx)}
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip content="Mover a la izquierda">
+                <IconButton
+                  size="1"
+                  variant="soft"
+                  disabled={pIdx === 0}
+                  onClick={() => handleMovePlayer(pIdx, -1)}
+                >
+                  <FontAwesomeIcon icon={faArrowLeft} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip content="Mover a la derecha">
+                <IconButton
+                  size="1"
+                  variant="soft"
+                  disabled={pIdx === players.length - 1}
+                  onClick={() => handleMovePlayer(pIdx, 1)}
+                >
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </IconButton>
+              </Tooltip>
+            </Flex>
+          </div>
         ),
         cell: (info) => {
           const rowIdx = info.row.index;
-          // Opciones para cada jugada
           if (rowIdx >= 0 && rowIdx < 6) {
             const value = rowIdx + 1;
             const options = Array.from({ length: 5 }, (_, i) =>
@@ -154,7 +249,6 @@ const Yahtzee = () => {
               </Select.Root>
             );
           }
-          // Opciones especiales para las jugadas
           const jugada = yahtzeeRows[rowIdx];
           let opts: string[] = [];
           if (jugada === "Escalera") opts = ["20", "25", "0", "x"];
@@ -193,13 +287,11 @@ const Yahtzee = () => {
             </Select.Root>
           );
         },
-        // accessorFn innecesario para columnas custom
       });
     });
     return base;
-  }, [players]);
+  }, [players, editingIdx]);
 
-  // Datos para la tabla: una fila por jugada
   const data = useMemo(() => yahtzeeRows.map((jugada) => ({ jugada })), []);
 
   const table = useReactTable({
