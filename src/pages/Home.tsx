@@ -15,7 +15,7 @@ const Home = () => {
     >
       <h1 style={{ marginBottom: 32 }}>DN APPS</h1>
       <div
-        onClick={() => navigate("/generala")}
+        onClick={() => navigate("/yahtzee")}
         style={{
           width: "80vw",
           maxWidth: 320,

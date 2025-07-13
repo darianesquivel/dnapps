@@ -1,16 +1,19 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Generala from "./pages/Generala";
+import { Theme } from "@radix-ui/themes";
+import Yahtzee from "./pages/Yahtzee";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/generala" element={<Generala />} />
-      </Routes>
-    </Router>
+    <Theme>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/Yahtzee" element={<Yahtzee />} />
+        </Routes>
+      </Router>
+    </Theme>
   );
 }
 
