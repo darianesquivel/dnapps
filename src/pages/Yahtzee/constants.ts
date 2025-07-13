@@ -9,12 +9,12 @@ import {
 
 // Filas del juego Yahtzee
 export const yahtzeeRows = [
-  "1 (unos)",
-  "2 (doses)",
-  "3 (treses)",
-  "4 (cuatros)",
-  "5 (cincos)",
-  "6 (seises)",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
   "Escalera",
   "Full",
   "Poker",
@@ -41,6 +41,7 @@ export interface Player {
 // Jugador inicial
 export const initialPlayers: Player[] = [
   { name: "Jugador 1", scores: Array(yahtzeeRows.length).fill("") },
+  { name: "Jugador 2", scores: Array(yahtzeeRows.length).fill("") },
 ];
 
 // Opciones de puntuación para filas de dados (1-6)

@@ -4,9 +4,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
-  background: #f5f5f5;
+  padding: 20px 0;
 }
 
 /* Botones de acción */
@@ -16,31 +16,70 @@
   margin-bottom: 24px;
 }
 
+/* Estilos para los botones principales */
+.yahtzee-action-buttons button {
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.yahtzee-action-buttons button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Contenedor de tabla */
 .yahtzee-table-container {
   width: 100%;
-  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px;
 }
 
 /* Tabla */
 .yahtzee-table {
-  width: 100%;
   margin: 0 auto;
+  overflow-x: auto;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .yahtzee-table-container {
+    padding: 0 8px;
+  }
+  
+  .yahtzee-table {
+    max-width: 100%;
+    font-size: 14px;
+  }
+  
+  .yahtzee-header-cell,
+  .yahtzee-body-cell {
+    padding: 8px 4px;
+    font-size: 14px;
+  }
+  
+  .yahtzee-player-actions {
+    gap: 2px;
+  }
+  
+  .yahtzee-player-actions button {
+    padding: 4px;
+  }
 }
 
 /* Celdas del header */
 .yahtzee-header-cell {
   background: #f0f0f0;
   border-bottom: 2px solid #e0e0e0;
-  padding: 16px 8px;
   font-size: 16px;
   text-align: center;
+
 }
 
 /* Celdas del body */
 .yahtzee-body-cell {
   border-bottom: 1px solid #ececec;
-  padding: 12px 8px;
   text-align: center;
   font-size: 15px;
 }
@@ -63,7 +102,6 @@
 /* Iconos de dados */
 .yahtzee-dice-icon {
   font-size: 24px;
-  color: #3b3b3b;
 }
 
 .yahtzee-dice-container {
@@ -76,6 +114,7 @@
 /* Texto de jugada */
 .yahtzee-jugada-text {
   font-weight: 500;
+  
 }
 
 /* Total */
@@ -83,6 +122,7 @@
   font-weight: 700;
   font-size: 16px;
   color: #f59e0b;
+  
 }
 
 /* Header de jugador */
@@ -91,6 +131,7 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  
 }
 
 /* Input de edición de nombre */
@@ -117,6 +158,38 @@
   gap: 4px;
   justify-content: center;
   margin-top: 2px;
+}
+
+/* Estilos para los IconButtons */
+.yahtzee-player-actions button {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  padding: 4px !important;
+}
+
+.yahtzee-player-actions button:hover {
+  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.05) !important;
+  box-shadow: none !important;
+}
+
+.yahtzee-player-actions button:active {
+  transform: scale(0.95);
+}
+
+.yahtzee-player-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Estilos específicos para los iconos dentro de los botones */
+.yahtzee-player-actions button svg {
+  width: 14px;
+  height: 14px;
 }
 
 /* Trigger del popover */

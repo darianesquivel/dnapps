@@ -40,15 +40,15 @@ export const getOptionsForRow = (rowIdx: number, yahtzeeRows: string[]): string[
     const jugada = yahtzeeRows[rowIdx];
     switch (jugada) {
       case "Escalera":
-        return ["20", "25", "0", "x"];
+        return ["20", "25", "x"];
       case "Full":
-        return ["30", "35", "0", "x"];
+        return ["30", "35", "x"];
       case "Poker":
-        return ["40", "45", "0", "x"];
+        return ["40", "45", "x"];
       case "Generala":
-        return ["50", "55", "0", "x"];
+        return ["50", "55", "x"];
       case "Doble Generala":
-        return ["100", "0", "x"];
+        return ["100", "x"];
       default:
         return ["x"];
     }
