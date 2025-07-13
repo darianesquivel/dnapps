@@ -162,9 +162,7 @@ const Yahtzee = () => {
                 />
               </TextField.Root>
             ) : (
-              <span
-                style={{ fontWeight: 700, fontSize: 16, cursor: "pointer" }}
-              >
+              <span style={{ fontWeight: 700, fontSize: 16 }}>
                 {player.name}
               </span>
             )}
