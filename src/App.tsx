@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import  Home  from './pages/home/index'
-import  Yahtzee  from './pages/yahtzee/index'
+import  Home  from './pages/home'
+import  YahtzeeGame  from './pages/yahtzee'
 
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/Yahtzee" element={<Yahtzee />} />
+          <Route path="/yahtzee" element={<YahtzeeGame />} />
         </Routes>
       </Router>
   );
