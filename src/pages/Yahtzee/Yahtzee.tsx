@@ -38,7 +38,7 @@ import {
   getOptionsForRow,
 } from "./utils";
 
-const YahtzeeGame = () => {
+const Yahtzee = () => {
   const [players, setPlayers] = useState<Player[]>(initialPlayers);
   const [editingIdx, setEditingIdx] = useState<number | null>(null);
   const [openPopover, setOpenPopover] = useState<{
@@ -340,4 +340,4 @@ const YahtzeeGame = () => {
   );
 };
 
-export default YahtzeeGame;
+export default Yahtzee;

@@ -1,3 +1,3 @@
-import YahtzeeGame from "./YahtzeeGame";
+import Yahtzee from "./Yahtzee";
 
-export default YahtzeeGame 
+export default Yahtzee 
