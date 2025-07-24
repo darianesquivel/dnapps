@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/home";
-import Yahtzee from "./pages/yahtzee";
+import Home from "./pages/Home";
+import Yahtzee from "./pages/Yahtzee";
 
 
 function App() {
