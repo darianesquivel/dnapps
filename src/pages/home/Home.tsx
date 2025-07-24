@@ -1,3 +1,6 @@
+import { faArrowCircleUp } from "@fortawesome/free-solid-svg-icons/faArrowCircleUp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button } from "@radix-ui/themes";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -14,27 +17,12 @@ const Home = () => {
       }}
     >
       <h1 style={{ marginBottom: 32 }}>DN APPS</h1>
-      <div
+      <Button variant="soft"
         onClick={() => navigate("/yahtzee")}
-        style={{
-          width: "80vw",
-          maxWidth: 320,
-          aspectRatio: "1/1",
-          background: "#fff",
-          borderRadius: 24,
-          boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 24,
-          fontWeight: 600,
-          color: "#333",
-          cursor: "pointer",
-          transition: "box-shadow 0.2s",
-        }}
       >
+        <FontAwesomeIcon icon={faArrowCircleUp}/>
         Generala
-      </div>
+      </Button>
     </div>
   );
 };

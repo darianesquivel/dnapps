@@ -1,0 +1,6 @@
+/* RADIX STYLES */
+@import "@radix-ui/themes/styles.css";
+
+
+/* PAGES STYLES */
+@import './pages/yahtzee/yahtzee.css'

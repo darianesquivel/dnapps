@@ -1,19 +1,15 @@
-import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import { Theme } from "@radix-ui/themes";
-import Yahtzee from "./pages/Yahtzee";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/home/Home";
+import Yahtzee from "./pages/yahtzee";
 
 function App() {
   return (
-    <Theme>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/Yahtzee" element={<Yahtzee />} />
         </Routes>
       </Router>
-    </Theme>
   );
 }
 
