@@ -6,6 +6,7 @@ import {
   IconButton,
   Tooltip,
   Popover,
+  TextField,
 } from "@radix-ui/themes";
 import {
   useReactTable,
@@ -22,6 +23,8 @@ import {
   faArrowRight,
   faTrophy,
   faRotateLeft,
+  faEllipsis,
+  faEllipsisVertical,
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 
@@ -39,6 +42,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Text } from "@radix-ui/themes";
 
+import {
+  addNewPlayer,
+  removePlayer,
+  movePlayer,
+  resetAllScores,
+} from "./utils";
+
 const Yahtzee = () => {
   const [players, setPlayers] = useState<Player[]>(initialPlayers);
   const [editingIdx, setEditingIdx] = useState<number | null>(null);
@@ -49,39 +59,20 @@ const Yahtzee = () => {
 
   const navigate = useNavigate();
 
+  const handleAddPlayer = () => setPlayers((prev) => addNewPlayer(prev));
+
   const handleRemovePlayer = (idx: number) => {
-    setPlayers((prev) => prev.filter((_, i) => i !== idx));
+    setPlayers((prev) => removePlayer(prev, idx));
     if (editingIdx === idx) setEditingIdx(null);
   };
 
   const handleMovePlayer = (idx: number, dir: -1 | 1) => {
-    setPlayers((prev) => {
-      const arr = [...prev];
-      const newIdx = idx + dir;
-      if (newIdx < 0 || newIdx >= arr.length) return arr;
-      [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
-      return arr;
-    });
+    setPlayers((prev) => movePlayer(prev, idx, dir));
     if (editingIdx === idx) setEditingIdx(idx + dir);
   };
 
-  const handleAddPlayer = () => {
-    setPlayers((prev) => [
-      ...prev,
-      {
-        name: `Jugador ${prev.length + 1}`,
-        scores: Array(yahtzeeRows.length).fill(""),
-      },
-    ]);
-  };
-
   const handleResetScores = () => {
-    setPlayers((prev) =>
-      prev.map((player) => ({
-        ...player,
-        scores: Array(yahtzeeRows.length).fill(""),
-      }))
-    );
+    setPlayers((prev) => resetAllScores(prev));
     setOpenPopover(null);
   };
 
@@ -130,67 +121,72 @@ const Yahtzee = () => {
             gap={"2"}
           >
             {editingIdx === pIdx ? (
-              <input
-                value={player.name}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  const newPlayers = [...players];
-                  newPlayers[pIdx].name = e.target.value;
-                  setPlayers(newPlayers);
-                }}
-                onBlur={() => setEditingIdx(null)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") setEditingIdx(null);
-                }}
-                autoFocus
-              />
+              <Flex maxWidth={"90px"}>
+                <TextField.Root
+                  value={player.name}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const newPlayers = [...players];
+                    newPlayers[pIdx].name = e.target.value;
+                    setPlayers(newPlayers);
+                  }}
+                  onBlur={() => setEditingIdx(null)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") setEditingIdx(null);
+                  }}
+                  autoFocus
+                />
+              </Flex>
             ) : (
-              <Text>{player.name}</Text>
+              <Flex justify={"center"} align={"center"} gap={"1"}>
+                <Text>{player.name}</Text>
+                <Popover.Root>
+                  <Popover.Trigger>
+                    <IconButton variant="soft" radius="full" size={"1"}>
+                      <FontAwesomeIcon icon={faEllipsisVertical} />
+                    </IconButton>
+                  </Popover.Trigger>
+                  <Popover.Content>
+                    <Flex direction={"column"} gap={"1"}>
+                      <Button
+                        size="1"
+                        variant="surface"
+                        radius="full"
+                        onClick={() => setEditingIdx(pIdx)}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        size="1"
+                        variant="surface"
+                        color="red"
+                        radius="full"
+                        onClick={() => handleRemovePlayer(pIdx)}
+                      >
+                        Eliminar
+                      </Button>
+                      <Button
+                        size="1"
+                        variant="surface"
+                        radius="full"
+                        disabled={pIdx === 0}
+                        onClick={() => handleMovePlayer(pIdx, -1)}
+                      >
+                        <FontAwesomeIcon icon={faArrowLeft} />
+                      </Button>
+                      <Button
+                        size="1"
+                        variant="surface"
+                        radius="full"
+                        disabled={pIdx === players.length - 1}
+                        onClick={() => handleMovePlayer(pIdx, 1)}
+                      >
+                        <FontAwesomeIcon icon={faArrowRight} />
+                      </Button>
+                    </Flex>
+                  </Popover.Content>
+                </Popover.Root>
+              </Flex>
             )}
-            <Flex gap={"1"} justify={"center"} align={"center"}>
-              <Tooltip content="Editar nombre">
-                <IconButton
-                  size="1"
-                  variant="surface"
-                  radius="full"
-                  onClick={() => setEditingIdx(pIdx)}
-                >
-                  <FontAwesomeIcon icon={faPen} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip content="Eliminar jugador">
-                <IconButton
-                  size="1"
-                  variant="surface"
-                  color="red"
-                  radius="full"
-                  onClick={() => handleRemovePlayer(pIdx)}
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip content="Mover a la izquierda">
-                <IconButton
-                  size="1"
-                  variant="surface"
-                  radius="full"
-                  disabled={pIdx === 0}
-                  onClick={() => handleMovePlayer(pIdx, -1)}
-                >
-                  <FontAwesomeIcon icon={faArrowLeft} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip content="Mover a la derecha">
-                <IconButton
-                  size="1"
-                  variant="surface"
-                  radius="full"
-                  disabled={pIdx === players.length - 1}
-                  onClick={() => handleMovePlayer(pIdx, 1)}
-                >
-                  <FontAwesomeIcon icon={faArrowRight} />
-                </IconButton>
-              </Tooltip>
-            </Flex>
           </Flex>
         ),
         cell: (info) => {

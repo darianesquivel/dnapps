@@ -36,8 +36,10 @@ export interface Player {
 }
 
 export const initialPlayers: Player[] = [
-  { name: "Jugador 1", scores: Array(yahtzeeRows.length).fill("") },
-  { name: "Jugador 2", scores: Array(yahtzeeRows.length).fill("") },
+  { name: "Pame", scores: Array(yahtzeeRows.length).fill("") },
+  { name: "Tomi", scores: Array(yahtzeeRows.length).fill("") },
+  { name: "Gene", scores: Array(yahtzeeRows.length).fill("") },
+  { name: "Dari", scores: Array(yahtzeeRows.length).fill("") },
 ];
 
 export const getDiceOptions = (diceValue: number): string[] => {

@@ -1,3 +1,4 @@
+import { yahtzeeRows } from "./constants";
 import type { Player } from "./constants";
 
 export const calculatePlayerTotal = (player: Player): number => {
@@ -54,3 +55,36 @@ export const getOptionsForRow = (
     }
   }
 };
+
+export const addNewPlayer = (players: Player[]): Player[] => [
+  ...players,
+  {
+    name: `Jugador ${players.length + 1}`,
+    scores: Array(yahtzeeRows.length).fill(""),
+  },
+];
+
+export const removePlayer = (players: Player[], index: number): Player[] =>
+  players.filter((_, i) => i !== index);
+
+export const movePlayer = (
+  players: Player[],
+  index: number,
+  direction: -1 | 1
+): Player[] => {
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= players.length) return players;
+
+  const newPlayers = [...players];
+  [newPlayers[index], newPlayers[newIndex]] = [
+    newPlayers[newIndex],
+    newPlayers[index],
+  ];
+  return newPlayers;
+};
+
+export const resetAllScores = (players: Player[]): Player[] =>
+  players.map((p) => ({
+    ...p,
+    scores: Array(yahtzeeRows.length).fill(""),
+  }));
