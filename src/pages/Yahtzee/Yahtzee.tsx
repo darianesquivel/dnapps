@@ -4,7 +4,6 @@ import {
   Flex,
   Button,
   IconButton,
-  Tooltip,
   Popover,
   TextField,
 } from "@radix-ui/themes";
@@ -17,13 +16,10 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserPlus,
-  faTrash,
-  faPen,
   faArrowLeft,
   faArrowRight,
   faTrophy,
   faRotateLeft,
-  faEllipsis,
   faEllipsisVertical,
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
