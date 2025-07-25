@@ -25,7 +25,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 
-// Importaciones locales
 import {
   yahtzeeRows,
   diceIcons,
@@ -37,6 +36,8 @@ import {
   getWinningPlayers,
   getOptionsForRow,
 } from "./utils";
+import { useNavigate } from "react-router-dom";
+import { Text } from "@radix-ui/themes";
 
 const Yahtzee = () => {
   const [players, setPlayers] = useState<Player[]>(initialPlayers);
@@ -46,13 +47,13 @@ const Yahtzee = () => {
     rowIdx: number;
   } | null>(null);
 
-  // Eliminar jugador
+  const navigate = useNavigate();
+
   const handleRemovePlayer = (idx: number) => {
     setPlayers((prev) => prev.filter((_, i) => i !== idx));
     if (editingIdx === idx) setEditingIdx(null);
   };
 
-  // Mover jugador
   const handleMovePlayer = (idx: number, dir: -1 | 1) => {
     setPlayers((prev) => {
       const arr = [...prev];
@@ -64,7 +65,6 @@ const Yahtzee = () => {
     if (editingIdx === idx) setEditingIdx(idx + dir);
   };
 
-  // Botón para agregar jugador
   const handleAddPlayer = () => {
     setPlayers((prev) => [
       ...prev,
@@ -75,7 +75,6 @@ const Yahtzee = () => {
     ]);
   };
 
-  // Resetear todos los puntajes
   const handleResetScores = () => {
     setPlayers((prev) =>
       prev.map((player) => ({
@@ -86,31 +85,35 @@ const Yahtzee = () => {
     setOpenPopover(null);
   };
 
-  // Columnas dinámicas: jugada + un header por jugador
   const columns = useMemo<ColumnDef<{ jugada: string }>[]>(() => {
     const base: ColumnDef<{ jugada: string }>[] = [
       {
-        id: "jugada",
-        header: () => <span className="yahtzee-jugada-header">Jugada</span>,
+        id: "jugador",
+        header: () => (
+          <Flex justify={"center"}>
+            <Text>Jugador</Text>
+          </Flex>
+        ),
         cell: (info) => {
           const idx = info.row.index;
           if (idx >= 0 && idx < 6) {
             return (
-              <span className="yahtzee-dice-container">
-                <FontAwesomeIcon
-                  icon={diceIcons[idx]}
-                  className="yahtzee-dice-icon"
-                />
-              </span>
+              <Flex justify="center">
+                <FontAwesomeIcon size="xl" icon={diceIcons[idx]} />
+              </Flex>
             );
           }
           if (idx === yahtzeeRows.length) {
-            return <span className="yahtzee-total-text">TOTAL</span>;
+            return (
+              <Flex justify="center">
+                <Text>TOTAL</Text>
+              </Flex>
+            );
           }
           return (
-            <span className="yahtzee-jugada-text">
-              {String(info.getValue())}
-            </span>
+            <Flex justify="center">
+              <Text>{String(info.getValue())}</Text>
+            </Flex>
           );
         },
         accessorFn: (row) => row.jugada,
@@ -120,7 +123,12 @@ const Yahtzee = () => {
       base.push({
         id: `jugador${pIdx}`,
         header: () => (
-          <div className="yahtzee-player-header">
+          <Flex
+            direction={"column"}
+            justify={"center"}
+            align={"center"}
+            gap={"2"}
+          >
             {editingIdx === pIdx ? (
               <input
                 value={player.name}
@@ -134,16 +142,16 @@ const Yahtzee = () => {
                   if (e.key === "Enter") setEditingIdx(null);
                 }}
                 autoFocus
-                className="yahtzee-name-input"
               />
             ) : (
-              <span className="yahtzee-player-name">{player.name}</span>
+              <Text>{player.name}</Text>
             )}
-            <Flex gap="1" justify="center" className="yahtzee-player-actions">
+            <Flex gap={"1"} justify={"center"} align={"center"}>
               <Tooltip content="Editar nombre">
                 <IconButton
                   size="1"
-                  variant="soft"
+                  variant="surface"
+                  radius="full"
                   onClick={() => setEditingIdx(pIdx)}
                 >
                   <FontAwesomeIcon icon={faPen} />
@@ -152,8 +160,9 @@ const Yahtzee = () => {
               <Tooltip content="Eliminar jugador">
                 <IconButton
                   size="1"
-                  variant="soft"
+                  variant="surface"
                   color="red"
+                  radius="full"
                   onClick={() => handleRemovePlayer(pIdx)}
                 >
                   <FontAwesomeIcon icon={faTrash} />
@@ -162,7 +171,8 @@ const Yahtzee = () => {
               <Tooltip content="Mover a la izquierda">
                 <IconButton
                   size="1"
-                  variant="soft"
+                  variant="surface"
+                  radius="full"
                   disabled={pIdx === 0}
                   onClick={() => handleMovePlayer(pIdx, -1)}
                 >
@@ -172,7 +182,8 @@ const Yahtzee = () => {
               <Tooltip content="Mover a la derecha">
                 <IconButton
                   size="1"
-                  variant="soft"
+                  variant="surface"
+                  radius="full"
                   disabled={pIdx === players.length - 1}
                   onClick={() => handleMovePlayer(pIdx, 1)}
                 >
@@ -180,38 +191,20 @@ const Yahtzee = () => {
                 </IconButton>
               </Tooltip>
             </Flex>
-          </div>
+          </Flex>
         ),
         cell: (info) => {
           const rowIdx = info.row.index;
-
-          // Si es la fila de totales
           if (rowIdx === yahtzeeRows.length) {
             const total = calculatePlayerTotal(players[pIdx]);
             const winningPlayers = getWinningPlayers(players);
             const isWinning = winningPlayers.includes(pIdx);
-            const isTie = winningPlayers.length > 1;
 
             return (
-              <div
-                className={`yahtzee-total-container ${
-                  isWinning
-                    ? "yahtzee-total-container-winning"
-                    : "yahtzee-total-container-normal"
-                }`}
-              >
-                {isWinning && (
-                  <FontAwesomeIcon
-                    icon={faTrophy}
-                    className={`yahtzee-trophy-icon ${
-                      isTie
-                        ? "yahtzee-trophy-icon-tie"
-                        : "yahtzee-trophy-icon-winner"
-                    }`}
-                  />
-                )}
-                {total}
-              </div>
+              <Flex gap={"2"} justify={"center"} align={"center"}>
+                {isWinning && <FontAwesomeIcon icon={faTrophy} color="gold" />}
+                <Text weight={isWinning ? "bold" : "light"}>{total}</Text>
+              </Flex>
             );
           }
 
@@ -219,7 +212,6 @@ const Yahtzee = () => {
           const isOpen =
             openPopover?.playerIdx === pIdx && openPopover?.rowIdx === rowIdx;
 
-          // Obtener opciones según el tipo de jugada
           const options = getOptionsForRow(rowIdx, yahtzeeRows);
 
           const handleSelectOption = (option: string) => {
@@ -230,45 +222,35 @@ const Yahtzee = () => {
           };
 
           return (
-            <Popover.Root
-              open={isOpen}
-              onOpenChange={(open) => {
-                if (open) {
-                  setOpenPopover({ playerIdx: pIdx, rowIdx });
-                } else {
-                  setOpenPopover(null);
-                }
-              }}
-            >
-              <Popover.Trigger>
-                <button
-                  className={`yahtzee-popover-trigger ${
-                    currentValue
-                      ? "yahtzee-popover-trigger-filled"
-                      : "yahtzee-popover-trigger-empty"
-                  }`}
-                >
-                  {currentValue || "—"}
-                </button>
-              </Popover.Trigger>
-              <Popover.Content className="yahtzee-popover-content">
-                <Flex direction="column" gap="1">
-                  {options.map((option) => (
-                    <button
-                      key={option}
-                      onClick={() => handleSelectOption(option)}
-                      className={`yahtzee-option-button ${
-                        option === currentValue
-                          ? "yahtzee-option-button-selected"
-                          : "yahtzee-option-button-normal"
-                      }`}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </Flex>
-              </Popover.Content>
-            </Popover.Root>
+            <Flex justify={"center"}>
+              <Popover.Root
+                open={isOpen}
+                onOpenChange={(open) => {
+                  if (open) {
+                    setOpenPopover({ playerIdx: pIdx, rowIdx });
+                  } else {
+                    setOpenPopover(null);
+                  }
+                }}
+              >
+                <Popover.Trigger>
+                  <Button variant="ghost">{currentValue || "..."}</Button>
+                </Popover.Trigger>
+                <Popover.Content>
+                  <Flex direction="column" gap="2">
+                    {options.map((option) => (
+                      <Button
+                        variant="ghost"
+                        key={option}
+                        onClick={() => handleSelectOption(option)}
+                      >
+                        {option}
+                      </Button>
+                    ))}
+                  </Flex>
+                </Popover.Content>
+              </Popover.Root>
+            </Flex>
           );
         },
       });
@@ -278,7 +260,6 @@ const Yahtzee = () => {
 
   const data = useMemo(() => {
     const baseData = yahtzeeRows.map((jugada) => ({ jugada }));
-    // Agregar fila de totales
     baseData.push({ jugada: "TOTAL" });
     return baseData;
   }, []);
@@ -290,52 +271,53 @@ const Yahtzee = () => {
   });
 
   return (
-    <Flex className="yahtzee-container">
-      <Flex gap="3" className="yahtzee-action-buttons">
-        <Button onClick={handleAddPlayer}>
-          <FontAwesomeIcon icon={faUserPlus} style={{ marginRight: 8 }} />{" "}
-          Agregar jugador
+    <Flex
+      direction={"column"}
+      justify={"center"}
+      align={"center"}
+      gap={"3"}
+      maxHeight={"100vh"}
+    >
+      <Flex gap="9">
+        <Button onClick={() => navigate("/")}>
+          <FontAwesomeIcon icon={faArrowLeft} />
         </Button>
-        <Button variant="soft" color="orange" onClick={handleResetScores}>
-          <FontAwesomeIcon icon={faRotateLeft} style={{ marginRight: 8 }} />{" "}
-          Resetear puntajes
-        </Button>
+        <Flex gap="3">
+          <Button variant="soft" color="green" onClick={handleAddPlayer}>
+            <FontAwesomeIcon icon={faUserPlus} />
+          </Button>
+          <Button variant="soft" color="tomato" onClick={handleResetScores}>
+            <FontAwesomeIcon icon={faRotateLeft} />
+          </Button>
+        </Flex>
       </Flex>
-      <div className="yahtzee-table-container">
-        <Table.Root variant="surface" className="yahtzee-table">
-          <Table.Header>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <Table.Row key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <Table.ColumnHeaderCell
-                    key={header.id}
-                    className="yahtzee-header-cell"
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </Table.ColumnHeaderCell>
-                ))}
-              </Table.Row>
-            ))}
-          </Table.Header>
-          <Table.Body>
-            {table.getRowModel().rows.map((row, i) => (
-              <Table.Row
-                key={row.id}
-                className={i % 2 === 0 ? "yahtzee-row-even" : "yahtzee-row-odd"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <Table.Cell key={cell.id} className="yahtzee-body-cell">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </Table.Cell>
-                ))}
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table.Root>
-      </div>
+      <Table.Root variant="surface">
+        <Table.Header>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <Table.Row key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <Table.ColumnHeaderCell key={header.id}>
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </Table.ColumnHeaderCell>
+              ))}
+            </Table.Row>
+          ))}
+        </Table.Header>
+        <Table.Body>
+          {table.getRowModel().rows.map((row, i) => (
+            <Table.Row key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <Table.Cell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </Table.Cell>
+              ))}
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table.Root>
     </Flex>
   );
 };

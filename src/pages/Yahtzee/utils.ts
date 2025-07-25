@@ -1,6 +1,5 @@
 import type { Player } from "./constants";
 
-// Calcular total de un jugador
 export const calculatePlayerTotal = (player: Player): number => {
   return player.scores.reduce((total, score) => {
     if (score && score !== "x") {
@@ -10,7 +9,6 @@ export const calculatePlayerTotal = (player: Player): number => {
   }, 0);
 };
 
-// Encontrar jugadores empatados
 export const getWinningPlayers = (players: Player[]): number[] => {
   if (players.length === 0) return [];
 
@@ -27,16 +25,18 @@ export const getWinningPlayers = (players: Player[]): number[] => {
   return winningPlayers;
 };
 
-// Obtener opciones según el tipo de jugada
-export const getOptionsForRow = (rowIdx: number, yahtzeeRows: string[]): string[] => {
+export const getOptionsForRow = (
+  rowIdx: number,
+  yahtzeeRows: string[]
+): string[] => {
   if (rowIdx >= 0 && rowIdx < 6) {
-    // Filas de dados (1-6)
     const value = rowIdx + 1;
-    const options = Array.from({ length: 5 }, (_, i) => String(value * (i + 1)));
+    const options = Array.from({ length: 5 }, (_, i) =>
+      String(value * (i + 1))
+    );
     options.push("x");
     return options;
   } else {
-    // Filas especiales
     const jugada = yahtzeeRows[rowIdx];
     switch (jugada) {
       case "Escalera":
@@ -46,11 +46,11 @@ export const getOptionsForRow = (rowIdx: number, yahtzeeRows: string[]): string[
       case "Poker":
         return ["40", "45", "x"];
       case "Generala":
-        return ["50", "55", "x"];
-      case "Doble Generala":
-        return ["100", "x"];
+        return ["50", "60", "x"];
+      case "X2 Generala":
+        return ["100", "120", "x"];
       default:
         return ["x"];
     }
   }
-}; 
+};

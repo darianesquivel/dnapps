@@ -7,7 +7,6 @@ import {
   faDiceSix,
 } from "@fortawesome/free-solid-svg-icons";
 
-// Filas del juego Yahtzee
 export const yahtzeeRows = [
   "1",
   "2",
@@ -19,10 +18,9 @@ export const yahtzeeRows = [
   "Full",
   "Poker",
   "Generala",
-  "Doble Generala",
+  "X2 Generala",
 ];
 
-// Iconos de dados para las primeras 6 filas
 export const diceIcons = [
   faDiceOne,
   faDiceTwo,
@@ -32,39 +30,37 @@ export const diceIcons = [
   faDiceSix,
 ];
 
-// Interfaz para un jugador
 export interface Player {
   name: string;
   scores: string[];
 }
 
-// Jugador inicial
 export const initialPlayers: Player[] = [
   { name: "Jugador 1", scores: Array(yahtzeeRows.length).fill("") },
   { name: "Jugador 2", scores: Array(yahtzeeRows.length).fill("") },
 ];
 
-// Opciones de puntuación para filas de dados (1-6)
 export const getDiceOptions = (diceValue: number): string[] => {
-  const options = Array.from({ length: 5 }, (_, i) => String(diceValue * (i + 1)));
+  const options = Array.from({ length: 5 }, (_, i) =>
+    String(diceValue * (i + 1))
+  );
   options.push("x");
   return options;
 };
 
-// Opciones de puntuación para filas especiales
 export const getSpecialOptions = (jugada: string): string[] => {
   switch (jugada) {
     case "Escalera":
-      return ["20", "25", "0", "x"];
+      return ["20", "25", "x"];
     case "Full":
-      return ["30", "35", "0", "x"];
+      return ["30", "35", "x"];
     case "Poker":
-      return ["40", "45", "0", "x"];
+      return ["40", "45", "x"];
     case "Generala":
-      return ["50", "55", "0", "x"];
-    case "Doble Generala":
-      return ["100", "0", "x"];
+      return ["50", "60", "x"];
+    case "X2 Generala":
+      return ["100", "120", "0", "x"];
     default:
       return ["x"];
   }
-}; 
+};

@@ -4,12 +4,12 @@ import Yahtzee from "./pages/Yahtzee/index";
 
 function App() {
   return (
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home/>} />
-          <Route path="/yahtzee" element={<Yahtzee/>} />
-        </Routes>
-      </Router>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/yahtzee" element={<Yahtzee />} />
+      </Routes>
+    </Router>
   );
 }
 

@@ -17,10 +17,8 @@ const Home = () => {
       }}
     >
       <h1 style={{ marginBottom: 32 }}>DN APPS</h1>
-      <Button variant="soft"
-        onClick={() => navigate("/yahtzee")}
-      >
-        <FontAwesomeIcon icon={faArrowCircleUp}/>
+      <Button variant="soft" onClick={() => navigate("/yahtzee")}>
+        <FontAwesomeIcon icon={faArrowCircleUp} />
         Generala
       </Button>
     </div>
